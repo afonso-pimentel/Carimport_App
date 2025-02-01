@@ -1,0 +1,15 @@
+{
+  "brand": "",
+  "model": "",
+  "fuel": "Petrol",
+  "initial_year": "2015",
+  "final_year": "2021",
+  "initial_km": "",
+  "final_km": "120000",
+  "initial_power": "150",
+  "final_power": "",
+  "power_type": "",
+  "price_from": "",
+  "price_to_autoscout": "30000",
+  "price_to_standvirtual": "35000"
+}

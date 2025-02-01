@@ -1,0 +1,22 @@
+{
+  "Petrol": {
+    "autoscout24": "B",
+    "standvirtual": "gaz"
+  },
+  "Diesel": {
+    "autoscout24": "D",
+    "standvirtual": "diesel"
+  },
+  "Electric": {
+    "autoscout24": "E",
+    "standvirtual": "electric"
+  },
+  "Hybrid-Petrol": {
+    "autoscout24": "2",
+    "standvirtual": "hibride-gaz"
+  },
+  "Hybrid-Diesel": {
+    "autoscout24": "3",
+    "standvirtual": "hibride-diesel"
+  }
+}

@@ -1,0 +1,4 @@
+[tool.poetry]
+name = "car_import_app"
+version = "0.1.0"
+description = "A Python application for importing cars"
