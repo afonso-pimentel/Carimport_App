@@ -1,1 +1,85 @@
 /setup_project.py
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Ignore environment variable files
+.env
+
+# Ignore build output directories
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore mypy type checker reports
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Ignore tox environment directories
+.tox/
+
+# Ignore Sphinx documentation build directories
+docs/_build/
+
+# Ignore pyenv
+.python-version
+
+# Ignore pipenv
+Pipfile.lock
+
+# Ignore celery beat schedule file
+celerybeat-schedule
+
+# Ignore SageMath generated files
+*.sage.py
+
+# Ignore Environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignore Spyder project settings
+.spyderproject
+.spyproject
+
+# Ignore Rope project settings
+.ropeproject
