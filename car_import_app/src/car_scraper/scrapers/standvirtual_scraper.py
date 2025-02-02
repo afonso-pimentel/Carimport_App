@@ -73,9 +73,6 @@ class StandvirtualScraper:
         def get_param(key):
             return next((p[1] for p in ad.get("params", []) if p[0] == key), None)
 
-        # Extract fuel type from fuel_type["key"] instead of params
-        fuel_raw = ad.get("fuel_type", {}).get("key", "Unknown")
-
         return Car(
             brand=get_param("Marca") or "Unknown",
             model=get_param("Modelo") or "Unknown",
@@ -87,5 +84,5 @@ class StandvirtualScraper:
             engine_power=float(get_param("Potência").replace(" cv", "")) if get_param("Potência") else 0,
             engine_displacement=float(get_param("Cilindrada").replace(" cm3", "").replace(",", "").replace(" ", "")) if get_param("Cilindrada") else 0,
             co2_emissions=float(get_param("Emissões CO2").replace(" g/km", "").replace(",", "").replace(" ", "")) if get_param("Emissões CO2") else 0,
-            fuel_type=FuelMapper.get_standard_fuel(fuel_raw)
+            fuel_type=FuelMapper.get_standard_fuel(get_param("Combustível"))
         )

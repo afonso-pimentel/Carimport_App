@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from car_scraper.models.car import Car
 from car_scraper.models.ad import Ad
 from car_scraper.utils.fuel_mapper import FuelMapper
+from car_scraper.utils.unit_converter import UnitConverter
 
 class AutoScout24Scraper:
     BASE_URL = "https://www.autoscout24.fr"
@@ -17,6 +18,10 @@ class AutoScout24Scraper:
         
         # Convert the standard fuel type to AutoScout24-specific fuel type
         autoscout_fuel_type = FuelMapper.map_fuel(self.filters.fuel, "autoscout24")
+
+        # Convert power values to the unit used by AutoScout24 (hp → kW)
+        initial_power_kw = UnitConverter.hp_to_kw(int(self.filters.initial_power)) if self.filters.initial_power else ""
+        final_power_kw = UnitConverter.hp_to_kw(int(self.filters.final_power)) if self.filters.final_power else ""
         
         search_params = [
             (self.filters.brand, f"/{self.filters.brand}"),
@@ -26,8 +31,8 @@ class AutoScout24Scraper:
             (self.filters.final_year, f"fregto={self.filters.final_year}"),
             (self.filters.initial_km, f"kmfrom={self.filters.initial_km}"),
             (self.filters.final_km, f"kmto={self.filters.final_km}"),
-            (self.filters.initial_power, f"powerfrom={self.filters.initial_power}"),
-            (self.filters.final_power, f"powerto={self.filters.final_power}"),
+            (initial_power_kw, f"powerfrom={initial_power_kw}"),
+            (final_power_kw, f"powerto={final_power_kw}"),
             (self.filters.price_from, f"pricefrom={self.filters.price_from}"),
             (self.filters.price_to_autoscout, f"priceto={self.filters.price_to_autoscout}"),
         ]
@@ -79,6 +84,7 @@ class AutoScout24Scraper:
 
         # Load JSON data from the page
         car_data = json.loads(script_tag.string.strip())
+        price = car_data.get("offers", {}).get("price", 0)
         item = car_data.get("offers", {}).get("itemOffered", {})
 
         # Extract fuel type from page HTML (if available)
@@ -99,10 +105,10 @@ class AutoScout24Scraper:
         # Extract mileage information correctly
         try:
             mileage_value = item['mileageFromOdometer'].get('value', None)
-            mileage_unit = item['mileageFromOdometer'].get('unitText', None)
+            mileage_unit = "KM"
         except:
             mileage_value = 0
-            mileage_unit = "KMT"
+            mileage_unit = "KM"
 
         # Extract production date
         try:
@@ -114,7 +120,7 @@ class AutoScout24Scraper:
         car = Car(
             brand=item.get("manufacturer", "Unknown"),
             model=item.get("model", "Unknown"),
-            price=item.get("offers", {}).get("price", 0),
+            price=price,
             currency=item.get("offers", {}).get("priceCurrency", "EUR"),
             production_date=production_date,
             mileage=mileage_value,
@@ -122,7 +128,7 @@ class AutoScout24Scraper:
             engine_power=engine_power,
             engine_displacement=engine_displacement,
             co2_emissions=emissions_co2,
-            fuel_type=FuelMapper.get_standard_fuel(fuel)  # ✅ Convert scraped fuel to standard type
+            fuel_type=FuelMapper.get_standard_fuel(fuel)
         )
 
         return Ad(source="AutoScout24", url=car_url, car=car)

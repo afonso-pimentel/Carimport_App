@@ -1,0 +1,7 @@
+{
+  "Hybrid-Petrol": ["Électrique/Essence", "Híbrido (Gasolina)"],
+  "Hybrid-Diesel": ["Électrique/Diesel", "Híbrido (Diesel)"],
+  "Electric": ["Electrique", "Électrico"],
+  "Diesel": ["Diesel"],
+  "Petrol": ["Essence", "Gasolina"]
+}

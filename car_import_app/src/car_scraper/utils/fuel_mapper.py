@@ -10,10 +10,17 @@ class FuelMapper:
         """Loads fuel mappings from the config directory."""
         try:
             with importlib.resources.open_text("car_scraper.config", "fuel_types.json") as file:
-                cls.PLATFORM_MAP = json.load(file)  # Load the entire JSON as-is
+                cls.PLATFORM_MAP = json.load(file)
         except FileNotFoundError:
             print("Error: fuel_types.json not found inside the package.")
             cls.PLATFORM_MAP = {}
+
+        try:
+            with importlib.resources.open_text("car_scraper.config", "fuel_reverse_mappings.json") as file:
+                cls.REVERSE_MAP = json.load(file)
+        except FileNotFoundError:
+            print("Error: fuel_reverse_mappings.json not found inside the package.")
+            cls.REVERSE_MAP = {}
 
     @classmethod
     def map_fuel(cls, fuel_name, platform):
@@ -31,19 +38,18 @@ class FuelMapper:
     def get_standard_fuel(cls, scraped_fuel):
         """
         Converts a scraped fuel type into the standard fuel type.
-        
-        :param scraped_fuel: The raw scraped fuel type (e.g., "essence")
-        :return: The standardized fuel type (e.g., "Petrol")
+
+        :param scraped_fuel: The raw scraped fuel type (e.g., "Électrique/Essence")
+        :return: The standardized fuel type (e.g., "Hybrid-Petrol")
         """
         if not scraped_fuel:
             return "Unknown"
 
         scraped_fuel = scraped_fuel.lower()
 
-        # Iterate over the fuel types and check if scraped_fuel exists in their values
-        for standard_fuel, platform_values in cls.PLATFORM_MAP.items():
-            if scraped_fuel in [value.lower() for value in platform_values.values()]:
-                return standard_fuel  # Return the standard fuel type
+        for standard_fuel, synonyms in cls.REVERSE_MAP.items():
+            if scraped_fuel in [syn.lower() for syn in synonyms]:
+                return standard_fuel
 
         return "Unknown"
 

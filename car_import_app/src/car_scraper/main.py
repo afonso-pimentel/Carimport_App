@@ -47,10 +47,10 @@ def scrape_car_info():
 
 def export_data():
     """Exports data from SQLite database to CSV."""
+    print("Exporting to CSV...")
     data = db.fetch_all_cars()
     cursor = db.cursor  # Get SQLite cursor for column names
     export_to_csv(data, cursor)
-    print("Exporting to CSV...")
 
 def main():
     while True:
