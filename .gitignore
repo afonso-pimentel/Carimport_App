@@ -83,3 +83,9 @@ venv.bak/
 
 # Ignore Rope project settings
 .ropeproject
+
+# Ignore CSV files
+*.csv
+
+# Ignore Example Json File
+ad_example.json

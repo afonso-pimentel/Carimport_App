@@ -2,6 +2,11 @@ from car_scraper.models.filters import Filters
 from car_scraper.scrapers.autoscout24_scraper import AutoScout24Scraper
 from car_scraper.scrapers.standvirtual_scraper import StandvirtualScraper
 from car_scraper.utils.fuel_mapper import FuelMapper
+from car_scraper.db import InMemoryDB
+from car_scraper.utils.csv_exporter import export_to_csv
+
+# Initialize database globally
+db = InMemoryDB()
 
 def add_search_criteria():
     print("Add search criteria:")
@@ -35,14 +40,24 @@ def scrape_car_info():
     for scraper in scrapers:
         ads = scraper.fetch_ads()
         print(f"Scraped {len(ads)} ads from {scraper.__class__.__name__}")
-        for ad in ads[:5]:  # Print first 5 ads
-            print(ad)
+
+        # Store ads in the in-memory database
+        for ad in ads:
+            db.insert_car(ad)
+
+def export_data():
+    """Exports data from SQLite database to CSV."""
+    data = db.fetch_all_cars()
+    cursor = db.cursor  # Get SQLite cursor for column names
+    export_to_csv(data, cursor)
+    print("Exporting to CSV...")
 
 def main():
     while True:
         print("\nMenu:")
         print("1. Add search criteria")
         print("2. Scrape car info")
+        print("3. Export to CSV")
         print("0. Exit")
 
         choice = input("Enter your choice: ")
@@ -51,6 +66,8 @@ def main():
             add_search_criteria()
         elif choice == '2':
             scrape_car_info()
+        elif choice == '3':
+            export_data()
         elif choice == '0':
             print("Exiting...")
             break

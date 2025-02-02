@@ -25,7 +25,8 @@ class StandvirtualScraper:
             "search[filter_float_mileage:from]": filters.initial_km,
             "search[filter_float_mileage:to]": filters.final_km,
             "search[filter_float_price:from]": filters.price_from,
-            "search[filter_float_price:to]": filters.price_to_standvirtual
+            "search[filter_float_price:to]": filters.price_to_standvirtual,
+            "search[category]":"29"
         }
 
     def fetch_ads(self):
@@ -38,9 +39,12 @@ class StandvirtualScraper:
             query_string = urlencode({**self.filters, "page": current_page})
             url = f"{self.BASE_URL}&{query_string}"
 
-            print(f"Fetching page {current_page}: {url}")
-            response = requests.get(url)
-            
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+            }
+
+            response = requests.get(url, headers=headers)
+
             if response.status_code != 200:
                 print(f"Error fetching page {current_page}: {response.text}")
                 break
@@ -69,6 +73,9 @@ class StandvirtualScraper:
         def get_param(key):
             return next((p[1] for p in ad.get("params", []) if p[0] == key), None)
 
+        # Extract fuel type from fuel_type["key"] instead of params
+        fuel_raw = ad.get("fuel_type", {}).get("key", "Unknown")
+
         return Car(
             brand=get_param("Marca") or "Unknown",
             model=get_param("Modelo") or "Unknown",
@@ -80,5 +87,5 @@ class StandvirtualScraper:
             engine_power=float(get_param("Potência").replace(" cv", "")) if get_param("Potência") else 0,
             engine_displacement=float(get_param("Cilindrada").replace(" cm3", "").replace(",", "").replace(" ", "")) if get_param("Cilindrada") else 0,
             co2_emissions=float(get_param("Emissões CO2").replace(" g/km", "").replace(",", "").replace(" ", "")) if get_param("Emissões CO2") else 0,
-            fuel_type=FuelMapper.map_fuel(get_param("Combustível"))
+            fuel_type=FuelMapper.get_standard_fuel(fuel_raw)
         )
